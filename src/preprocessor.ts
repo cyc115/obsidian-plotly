@@ -30,11 +30,23 @@ const validate = (json: any, el: HTMLElement) => {
 }
 
 const render = (json: any, el: HTMLElement) => {
-    renderPlotly(el, json.data, json.layout, json.config)
+    const layout = json.layout || {};
+    const config = json.config || {};
+
+    if (!layout.width && !layout.height) {
+        layout.autosize = true;
+    }
+
+    if (config.responsive === undefined) {
+        config.responsive = true;
+    }
+
+    renderPlotly(el, json.data, layout, config)
 }
 
 export const renderPlotly = (el: HTMLElement, data: Object[], layout: Object, config: Object) => {
     const destination = document.createElement('div');
+    destination.classList.add('obsidian-plotly');
 
     if(el.firstElementChild!=null){
         Plotly.update(destination, data as any, layout, config as any);        
